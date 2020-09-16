@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
     sPerWithOutNosie = new QLineSeries();
     sParWithOutNosieInv = new QLineSeries();
     sPerWithOutNosieInv = new QLineSeries();
+    
 }
 
 MainWindow::~MainWindow()

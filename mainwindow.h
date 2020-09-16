@@ -38,6 +38,8 @@ public:
     QLineSeries *sParallel;
     QLineSeries *sParWithOutNosie;
     QLineSeries *sPerWithOutNosie;
+    QLineSeries *sParWithOutNull;
+    QLineSeries *sPerWithOutNull;
     QLineSeries *sParWithOutNosieInv;
     QLineSeries *sPerWithOutNosieInv;
 
@@ -48,11 +50,12 @@ private:
     Ui::MainWindow *ui;
     void invert(); // инвертирования сигнала
     void begin(); // начальное отображение сигнала
-
     void delNoise(); // удаление шумовой дорожки
     void dellZero(); // удаление
-    void addChart(QLineSeries *, QLineSeries*, QString title); // добавление вкладки с графиком
+    void normValue(); // нормировка значений по промежутку от 0, до signal_max
+    void normKiloMetrs(); // нормировка величин по 12 километрам
 
+    void addChart(QLineSeries *, QLineSeries*, QString title); // добавление вкладки с графиком
     int map(int value, int in_min,int in_max,int out_min,int out_max); // перевод значения в заданный интервад
     int findMin(QLineSeries *); // поиск минимального значения в серии
     int findMax(QLineSeries *); // поиск максимального значения в серии
