@@ -12,6 +12,8 @@
 #include <QTextStream>
 #include <QDebug>
 #include <QMessageBox>
+#include <QVector>
+#include <cmath>
 using namespace QtCharts;
 
 QT_BEGIN_NAMESPACE
@@ -25,11 +27,31 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    QVector<int> vect1,vect2;
+    int maxPar = 0;
+    int maxPer = 0;
+
+    QLineSeries *sPerpen;
+    QLineSeries *sParallel;
+    QLineSeries *sParWithOutNosie;
+    QLineSeries *sPerWithOutNosie;
+    QLineSeries *sParWithOutNosieInv;
+    QLineSeries *sPerWithOutNosieInv;
 
 private slots:
     void on_btnGo_clicked();
 
 private:
     Ui::MainWindow *ui;
+    void invert(); // инвертирования сигнала
+    void begin(); // начальное отображение сигнала
+
+    void delNoise(); // удаление шумовой дорожки
+    void dellZero(); // удаление
+    void addChart(QLineSeries *, QLineSeries*, QString title); // добавление вкладки с графиком
+
+    int map(int in_min,int in_max,int out_min,int out_max); // перевод значения в заданный интервад
+    int findMin(QLineSeries *); // поиск минимального значения в серии
+    int findMax(QLineSeries *); // поиск максимального значения в серии
 };
 #endif // MAINWINDOW_H
