@@ -63,39 +63,8 @@ void MainWindow::begin()
 
         file.close();
         // Создаётся график и добавляется в него серия значений
-        QChart *chart = new QChart(); // Для начлаьных значений
+        addChart(sParallel,sPerpen,"Начальные значения");
 
-        chart->addSeries(sParallel);
-        chart->addSeries(sPerpen);
-
-        sParallel->setName("\"Параллельный АЛ \" ");
-        sPerpen->setName("\"Перпендикулярный АЛ\" ");
-
-        chart->setTitle("Начальные значения");
-        // Настраиваются оси графика
-        QValueAxis *axisX = new QValueAxis();
-        axisX->setTitleText("X, м");            //Подпись к оси X
-        axisX->setLabelFormat("%d");
-        axisX->setTickCount(20);                 //Сколько отрезков на оси, минимум 2
-        chart->addAxis(axisX, Qt::AlignBottom); //Подключение оси к графику
-        sParallel->attachAxis(axisX);              //Подключение оси к значениям
-        sPerpen->attachAxis(axisX);
-
-        QValueAxis *axisY = new QValueAxis();
-        axisY->setTitleText("t, мс");
-        axisY->setLabelFormat("%d");
-        axisY->setTickCount(20);
-        chart->addAxis(axisY, Qt::AlignLeft);
-        sParallel->attachAxis(axisY);
-        sPerpen->attachAxis(axisY);
-
-        axisY->setMax(this->sParallel->at(sParallel->count()-1).y() + 100);
-        //axisY->setMin(sParallel);
-
-        chartView->setChart(chart);     // Устанавливаеncz график в представление
-        ui->tabGraphics->addTab(chartView, "Начальные значения");
-        //ui->tabGraphics->addTab(chartViewInv, "Инвертированное значения");
-        //-----------------------------------------------------
     }
 }
 
@@ -164,7 +133,7 @@ void MainWindow::addChart(QLineSeries *sPar, QLineSeries *sPer,QString title)
     sPar->setName("\"Параллельный АЛ \" ");
     sPer->setName("\"Перпендикулярный АЛ\" ");
 
-    chart->setTitle("Начальные значения");
+    chart->setTitle(title);
     // Настраиваются оси графика
     QValueAxis *axisX = new QValueAxis();
     axisX->setTitleText("X, м");            //Подпись к оси X
@@ -182,8 +151,11 @@ void MainWindow::addChart(QLineSeries *sPar, QLineSeries *sPer,QString title)
     sPar->attachAxis(axisY);
     sPer->attachAxis(axisY);
     chartView->setRubberBand(QChartView::HorizontalRubberBand);
-    //axisY->setMax(this->sParalle->at(sParallel->count()-1).y() + 100);
-   // axisY->setMin(0);
+
+    int Max = (findMax(sPar) > findMax(sPer) ? findMax(sPar) : findMax(sPer));
+    int Min = (findMin(sPar) < findMin(sPer) ? findMin(sPar) : findMin(sPer));
+    axisY->setMax(Max + 100);
+    axisY->setMin(Min);
 
     chartView->setChart(chart);     // Устанавливаеncz график в представление
     ui->tabGraphics->addTab(chartView, title);
@@ -196,6 +168,7 @@ int MainWindow::findMin(QLineSeries *series)
         if(min > series->at(i).y())
             min = series->at(i).y();
     }
+    qDebug() << min;
     return min;
 }
 
@@ -206,5 +179,6 @@ int MainWindow::findMax(QLineSeries *series)
         if(max < series->at(i).y())
             max = series->at(i).y();
     }
+    qDebug() << max;
     return max;
 }
