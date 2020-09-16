@@ -23,6 +23,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_btnGo_clicked()
 {
     begin();
+    dellZero();
     delNoise();
     invert();
 }
@@ -68,6 +69,15 @@ void MainWindow::begin()
     }
 }
 
+void MainWindow::dellZero()
+{
+    this->minIndexPar = findMinIndex(this->sParallel);
+    this->minIndexPer = findMinIndex(this->sPerpen);
+    this->sParallel->removePoints(0,this->minIndexPar - 1);
+    this->sPerpen->removePoints(0,this->minIndexPer - 1);
+    addChart(this->sParallel, this->sPerpen, "Убрали нулевую дорожку");
+}
+
 void MainWindow::delNoise()
 {
         QFile noise("noise.csv");
@@ -95,15 +105,20 @@ void MainWindow::delNoise()
 
                 row++;
             }
+
+            tempPar->removePoints(0, this->minIndexPar - 1);
+            tempPer->removePoints(0, this->minIndexPar - 1);
             // делаем так, чтобы серия из данных шума отсортировалась
-            for(int i = 0; i < tempPar->count(); i ++)
+            for(int i = 0; i < tempPar->count() && i < tempPer->count(); i ++)
             {
                 this->sParWithOutNosie->append(i,this->sParallel->at(i).y() - tempPar->at(i).y());
                 this->sPerWithOutNosie->append(i,this->sPerpen->at(i).y() - tempPer->at(i).y());
-                if(this->maxPar < abs(this->sParWithOutNosie->at(i).y()))
-                    this->maxPar = abs(this->sParWithOutNosie->at(i).y());
-                if(this->maxPer < abs(this->sPerWithOutNosie->at(i).y()))
-                    this->maxPer = abs(this->sPerWithOutNosie->at(i).y());
+
+                if(this->maxPar < this->sParWithOutNosie->at(i).y())
+                    this->maxPar = this->sParWithOutNosie->at(i).y();
+                if(this->maxPer < this->sPerWithOutNosie->at(i).y())
+                    this->maxPer = this->sPerWithOutNosie->at(i).y();
+
             }
             qDebug() << this->maxPar;
             qDebug() << this->maxPer;

@@ -28,8 +28,11 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     QVector<int> vect1,vect2;
-    int maxPar = 0;
-    int maxPer = 0;
+    int maxPar = 0; //макс занчение параллельного, используется для инвертирования
+    int maxPer = 0; //макс занчение перпендикулятрного, используется для инвертирования
+    int minIndexPar; // запоминаеи индексы минимальных элементов,
+    int minIndexPer; // чтобы осключить такое же количество точек из шумовой дорожки
+
 
     QLineSeries *sPerpen;
     QLineSeries *sParallel;
@@ -50,8 +53,9 @@ private:
     void dellZero(); // удаление
     void addChart(QLineSeries *, QLineSeries*, QString title); // добавление вкладки с графиком
 
-    int map(int in_min,int in_max,int out_min,int out_max); // перевод значения в заданный интервад
+    int map(int value, int in_min,int in_max,int out_min,int out_max); // перевод значения в заданный интервад
     int findMin(QLineSeries *); // поиск минимального значения в серии
     int findMax(QLineSeries *); // поиск максимального значения в серии
+    int findMinIndex(QLineSeries *); // return min vaue index
 };
 #endif // MAINWINDOW_H
