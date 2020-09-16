@@ -182,3 +182,23 @@ int MainWindow::findMax(QLineSeries *series)
     qDebug() << max;
     return max;
 }
+
+int MainWindow::findMinIndex(QLineSeries *series)
+{
+    int min = series->at(0).y();
+    int index = 0;
+    for (int i = 0;i < series->count(); i++) {
+        if(min > series->at(i).y())
+        {
+            min = series->at(i).y();
+            index = i;
+        }
+    }
+    qDebug() << index;
+    return index;
+}
+
+int MainWindow::map(int value, int in_min, int in_max, int out_min, int out_max)
+{
+    return (value - in_min)*(out_max - out_min)/(in_max - in_min)+out_min;
+}
