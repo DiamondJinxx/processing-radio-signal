@@ -34,7 +34,7 @@ public:
     int maxPer = 0; //макс занчение перпендикулятрного, используется для инвертирования
     int minIndexPar; // запоминаеи индексы минимальных элементов,
     int minIndexPer; // чтобы осключить такое же количество точек из шумовой дорожки
-
+    bool end = false;
 
     QLineSeries *sPerpen;
     QLineSeries *sParallel;
@@ -50,8 +50,10 @@ public:
     QLineSeries *sParNorm12; // серии для отображения графиков нормированных по расстоянию
     QLineSeries *sPerNorm12;
 
-    QLineSeries *sMedianPar;
+    QLineSeries *sMedianPar;// серии для результатов медианной фильтрации
     QLineSeries *sMedianPer;
+
+    QLineSeries *sResult;
 
 private slots:
     void on_btnGo_clicked();
@@ -65,8 +67,10 @@ private:
     void normValue(); // нормировка значений по промежутку от 0, до signal_max
     void normKiloMetrs(); // нормировка величин по 12 километрам
     void median(); // функция медианного фильтра 3 порядка
+    void result();
 
     void addChart(QLineSeries *, QLineSeries*, QString title); // добавление вкладки с графиком
+    void addChart(QLineSeries *, QString title); // добавление вкладки с графиком
     int map(int value, int in_min,int in_max,int out_min,int out_max); // перевод значения в заданный интервад
     int findMin(QLineSeries *); // поиск минимального значения в серии
     int findMax(QLineSeries *); // поиск максимального значения в серии

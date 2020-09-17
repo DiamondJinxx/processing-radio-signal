@@ -19,8 +19,11 @@ MainWindow::MainWindow(QWidget *parent)
     sParNorm12 = new QLineSeries();
     sPerNorm12 = new QLineSeries();
 
-    sMedianPar = new QLineSeries();
+    sMedianPar = new QLineSeries();// серия для результатов медианной фильтрации
     sMedianPer = new QLineSeries();
+
+    sResult = new QLineSeries();
+
 }
 
 MainWindow::~MainWindow()
@@ -31,13 +34,19 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_btnGo_clicked()
 {
-    begin();
-    dellZero();
-    delNoise();
-    invert();
-    normValue();
-    normKiloMetrs();
-    median();
+    if(!end){
+        begin();
+        dellZero();
+        delNoise();
+        invert();
+        normValue();
+        normKiloMetrs();
+        median();
+        result();
+        end = true;
+    }
+    else
+        QMessageBox::warning(this,"Вычисление уже были произведены","Перезапустите программу, чтобы провести вычисления еще раз.");
 }
 
 // начальное отображение данных
@@ -193,6 +202,20 @@ void MainWindow::median()
     addChart(this->sMedianPar,this->sMedianPer, "Медианный фильтер 3 порядка" );
 }
 
+void MainWindow::result()
+{
+    for(int i = 0; i < this->sMedianPar->count() && i < this->sMedianPer->count(); i++)
+    {
+        // потеря точности наверно будет не очень критичной,
+        // особенно если данные смотрят визуально, но пока возьмем плавающее
+        double par = pow(this->sMedianPar->at(i).y(), 2);
+        double per = pow(this->sMedianPer->at(i).y(), 2);
+        double res = sqrt(par + per);
+        this->sResult->append(this->sMedianPar->at(i).x(), res);
+    }
+    addChart(this->sResult, "Результат");
+}
+
 void MainWindow::addChart(QLineSeries *sPar, QLineSeries *sPer,QString title)
 {
     QChartView *chartView = new QChartView(this);
@@ -230,6 +253,41 @@ void MainWindow::addChart(QLineSeries *sPar, QLineSeries *sPer,QString title)
     chartView->setChart(chart);     // Устанавливаеncz график в представление
     ui->tabGraphics->addTab(chartView, title);
 }
+
+void MainWindow::addChart(QLineSeries *sResult, QString title)
+{
+    QChartView *chartView = new QChartView(this);
+    QChart *chart = new QChart();
+    chart->addSeries(sResult);
+
+    sResult->setName("\" Обработанный сигнал \" ");
+
+    chart->setTitle(title);
+    // Настраиваются оси графика
+    QValueAxis *axisX = new QValueAxis();
+    axisX->setTitleText("X, м");            //Подпись к оси X
+    axisX->setLabelFormat("%d");
+    axisX->setTickCount(20);                 //Сколько отрезков на оси, минимум 2
+    chart->addAxis(axisX, Qt::AlignBottom); //Подключение оси к графику
+    sResult->attachAxis(axisX);              //Подключение оси к значениям
+
+    QValueAxis *axisY = new QValueAxis();
+    axisY->setTitleText("t, мс");
+    axisY->setLabelFormat("%d");
+    axisY->setTickCount(20);
+    chart->addAxis(axisY, Qt::AlignLeft);
+    sResult->attachAxis(axisY);
+    chartView->setRubberBand(QChartView::HorizontalRubberBand);
+
+    int Max = findMax(sResult);
+    int Min = findMin(sResult);
+    axisY->setMax(Max + 100);
+    axisY->setMin(Min);
+
+    chartView->setChart(chart);     // Устанавливаеncz график в представление
+    ui->tabGraphics->addTab(chartView, title);
+}
+
 
 int MainWindow::findMin(QLineSeries *series)
 {
