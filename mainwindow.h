@@ -72,7 +72,7 @@ private:
     int findMax(QLineSeries *); // поиск максимального значения в серии
     int findMaxX(QLineSeries *);
     int findMinIndex(QLineSeries *); // return min vaue index
-
+    QLineSeries *medianFilter(QLineSeries *initial); // функция медианного фильтра
 
 };
 #endif // MAINWINDOW_H

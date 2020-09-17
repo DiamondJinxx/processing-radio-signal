@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
     sParNorm12 = new QLineSeries();
     sPerNorm12 = new QLineSeries();
 
+    sMedianPar = new QLineSeries();
+    sMedianPer = new QLineSeries();
 }
 
 MainWindow::~MainWindow()
@@ -35,6 +37,7 @@ void MainWindow::on_btnGo_clicked()
     invert();
     normValue();
     normKiloMetrs();
+    median();
 }
 
 // начальное отображение данных
@@ -183,6 +186,13 @@ void MainWindow::normKiloMetrs()
     addChart(this->sParNorm12, this->sPerNorm12, "Нормировка на 12 километров");
 }
 
+void MainWindow::median()
+{
+    this->sMedianPar = medianFilter(this->sParNorm12);
+    this->sMedianPer = medianFilter(this->sPerNorm12);
+    addChart(this->sMedianPar,this->sMedianPer, "Медианный фильтер 3 порядка" );
+}
+
 void MainWindow::addChart(QLineSeries *sPar, QLineSeries *sPer,QString title)
 {
     QChartView *chartView = new QChartView(this);
@@ -278,3 +288,71 @@ int MainWindow::map(int value, int in_min, int in_max, int out_min, int out_max)
     return (value - in_min)*(out_max - out_min)/(in_max - in_min)+out_min;
 }
 
+QLineSeries* MainWindow::medianFilter(QLineSeries *initial)
+{
+    QLineSeries *result = new QLineSeries();
+    for(int i = 2; i < initial->count(); i+=3) // краевые случаии не фильтруются и вносится небольшая ошибка
+    {
+        int a = initial->at(i-2).y();int x = initial->at(i-2).x();
+        int b = initial->at(i-1).y();int x1 = initial->at(i-1).x();
+        int c = initial->at(i).y();  int x2 = initial->at(i).x();
+        if( a <= b && a <= c){                 // сравнение нетрогое, в случае равенства
+            if( b <= c)                         // может быть пропущен вход в условие, так как
+                result->append(x1,b);        // a == b && a == c и пропускается условие
+            else
+                result->append(x2,c);
+        }
+        else
+        {
+            if( b <= a && b <= c){
+                if( a < c)
+                    result->append(x,a);
+                else
+                    result->append(x2,c);
+            }
+            else
+            {
+                if( a <= b)
+                    result->append(x,a);
+                else
+                    result->append(x1,b);
+            }
+        }
+    }
+    return result;
+}
+
+QLineSeries* MainWindow::medianFilter2(QLineSeries *initial)
+{
+    QLineSeries *result = new QLineSeries();
+    QLineSeries *tmp = new QLineSeries();
+    for(int i = 2; i < initial->count(); i+=3) // краевые случаии не фильтруются и вносится небольшая ошибка
+    {
+        int a = initial->at(i-2).y();int x = initial->at(i-2).x();
+        int b = initial->at(i-1).y();int x1 = initial->at(i-1).x();
+        int c = initial->at(i).y();  int x2 = initial->at(i).x();
+        if( a <= b && a <= c){                 // сравнение нетрогое, в случае равенства
+            if( b <= c)                         // может быть пропущен вход в условие, так как
+                result->append(x1,b);        // a == b && a == c и пропускается условие
+            else
+                result->append(x2,c);
+        }
+        else
+        {
+            if( b <= a && b <= c){
+                if( a < c)
+                    result->append(x,a);
+                else
+                    result->append(x2,c);
+            }
+            else
+            {
+                if( a <= b)
+                    result->append(x,a);
+                else
+                    result->append(x1,b);
+            }
+        }
+    }
+    return result;
+}
