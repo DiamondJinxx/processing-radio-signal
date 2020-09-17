@@ -290,6 +290,62 @@ int MainWindow::map(int value, int in_min, int in_max, int out_min, int out_max)
 
 QLineSeries* MainWindow::medianFilter(QLineSeries *initial)
 {
+    //QLineSeries *tmp = new QLineSeries();
+    QLineSeries *result = new QLineSeries();
+    for(int i = 0; i < initial->count(); i++) // краевые случаии не фильтруются и вносится небольшая ошибка
+    {
+        int a; int x;
+        if(i == 0)
+        {
+            a = initial->at(i).y();
+            x = initial->at(i).x();
+        }
+        else
+        {
+            a = initial->at(i-1).y();
+            x = initial->at(i-1).x();
+        }
+        int b = initial->at(i).y();int x1 = initial->at(i).x();
+        int c; int x2;
+        if(i == initial->count() - 1)
+        {
+            c = initial->at(i).y();
+            x2 = initial->at(i).x();
+        }
+        else
+        {
+            c = initial->at(i+1).y();
+            x2 = initial->at(i+1).x();
+        }
+
+        if( a <= b && a <= c){ // сравнение нетрогое, в случае равенства
+            if( b <= c) // может быть пропущен вход в условие, так как
+                result->append(x1,b); // a == b && a == c и пропускается условие
+            else
+                result->append(x2,c);
+        }
+        else
+        {
+            if( b <= a && b <= c){
+                if( a < c)
+                    result->append(x,a);
+                else
+                    result->append(x2,c);
+            }
+            else
+            {
+                if( a <= b)
+                    result->append(x,a);
+                else
+                    result->append(x1,b);
+            }
+        }
+    }
+    return result;
+}
+/*
+QLineSeries* MainWindow::medianFilter(QLineSeries *initial)
+{
     QLineSeries *result = new QLineSeries();
     for(int i = 2; i < initial->count(); i+=3) // краевые случаии не фильтруются и вносится небольшая ошибка
     {
@@ -321,7 +377,8 @@ QLineSeries* MainWindow::medianFilter(QLineSeries *initial)
     }
     return result;
 }
-
+*/
+/*
 QLineSeries* MainWindow::medianFilter2(QLineSeries *initial)
 {
     QLineSeries *result = new QLineSeries();
@@ -356,3 +413,4 @@ QLineSeries* MainWindow::medianFilter2(QLineSeries *initial)
     }
     return result;
 }
+*/
