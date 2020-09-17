@@ -62,8 +62,6 @@ void MainWindow::begin()
         // Создаём поток для извлечения данных из файла
         QTextStream in(&file);
 
-        QChartView *chartView = new QChartView(this);
-
         // Считываем данные до конца файла
         int row = 0; // строки в файле, для оси X
         while (!in.atEnd())
@@ -143,7 +141,7 @@ void MainWindow::delNoise()
             }
             noise.close();
             // Создаётся график и добавляется в него серия значений
-           addChart(sParWithOutNosie, sPerWithOutNosie,"Уадаление шумовой дорожки");
+           addChart(sParWithOutNosie, sPerWithOutNosie,"Удаление шумовой дорожки");
 
         }
 }
