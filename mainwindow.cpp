@@ -34,6 +34,7 @@ void MainWindow::on_btnGo_clicked()
     delNoise();
     invert();
     normValue();
+    normKiloMetrs();
 }
 
 
@@ -167,8 +168,15 @@ void MainWindow::normKiloMetrs()
     int koefKillometrs = KILLOMETRS/this->sParNorm->count(); // берем "весовой" коэфф шага измерения.
     for (int i = 0; i < this->sParNorm->count() && this->sPerNorm->count(); i++)
     {
-
+        int ParX = map(this->sParNorm->at(i).x() * koefKillometrs, 0, tMaxPer, 0,KILLOMETRS);
+        int ParY = this->sParNorm->at(i).y();
+        int PerX = this->sPerNorm->at(i).x() * koefKillometrs;
+        int PerY = this->sPerNorm->at(i).y();
+        this->sParNorm12->append(ParX, ParY);
+        this->sPerNorm12->append(PerX, PerY);
     }
+
+    addChart(this->sParNorm12, this->sPerNorm12, "Нормировка на 12 километров");
 }
 
 void MainWindow::addChart(QLineSeries *sPar, QLineSeries *sPer,QString title)
@@ -229,7 +237,17 @@ int MainWindow::findMax(QLineSeries *series)
         if(max < series->at(i).y())
             max = series->at(i).y();
     }
-    qDebug() << max;
+
+    return max;
+}
+
+int MainWindow::findMaxX(QLineSeries *series)
+{
+    int max = series->at(0).x();
+    for (int i = 0;i < series->count(); i++) {
+        if(max < series->at(i).x())
+            max = series->at(i).x();
+    }
     return max;
 }
 

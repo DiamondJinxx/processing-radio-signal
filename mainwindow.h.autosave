@@ -66,6 +66,7 @@ private:
     int map(int value, int in_min,int in_max,int out_min,int out_max); // перевод значения в заданный интервад
     int findMin(QLineSeries *); // поиск минимального значения в серии
     int findMax(QLineSeries *); // поиск максимального значения в серии
+    int findMaxX(QLineSeries *);
     int findMinIndex(QLineSeries *); // return min vaue index
 };
 #endif // MAINWINDOW_H
