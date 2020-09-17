@@ -14,6 +14,11 @@ MainWindow::MainWindow(QWidget *parent)
     sPerWithOutNosie = new QLineSeries();
     sParWithOutNosieInv = new QLineSeries();
     sPerWithOutNosieInv = new QLineSeries();
+    sParNorm = new QLineSeries();
+    sPerNorm = new QLineSeries();
+    sParNorm12 = new QLineSeries();
+    sPerNorm12 = new QLineSeries();
+
 }
 
 MainWindow::~MainWindow()
@@ -28,6 +33,7 @@ void MainWindow::on_btnGo_clicked()
     dellZero();
     delNoise();
     invert();
+    normValue();
 }
 
 
@@ -140,6 +146,31 @@ void MainWindow::invert()
     }
     addChart(this->sParWithOutNosieInv, this->sPerWithOutNosieInv,"Инвертированные значения");
 }
+
+void MainWindow::normValue()
+{
+    int signal_max =ui->signalMax->value();
+    int tMaxPar = findMax(this->sParWithOutNosieInv);
+    int tMaxPer = findMax(this->sPerWithOutNosieInv);
+    for(int i = 0; i < this->sParWithOutNosieInv->count() && this->sParWithOutNosieInv->count(); i++)
+    {
+        int tmpPar = map(this->sParWithOutNosieInv->at(i).y(),0,tMaxPar, 0,signal_max);
+        int tmpPer = map(this->sPerWithOutNosieInv->at(i).y(),0,tMaxPer, 0,signal_max);
+        this->sParNorm->append(i,tmpPar);
+        this->sPerNorm->append(i,tmpPer);
+    }
+    addChart(this->sParNorm, this->sPerNorm,"Нормирование по значениям");
+}
+
+void MainWindow::normKiloMetrs()
+{
+    int koefKillometrs = KILLOMETRS/this->sParNorm->count(); // берем "весовой" коэфф шага измерения.
+    for (int i = 0; i < this->sParNorm->count() && this->sPerNorm->count(); i++)
+    {
+
+    }
+}
+
 void MainWindow::addChart(QLineSeries *sPar, QLineSeries *sPer,QString title)
 {
     QChartView *chartView = new QChartView(this);
@@ -189,6 +220,8 @@ int MainWindow::findMin(QLineSeries *series)
     return min;
 }
 
+
+
 int MainWindow::findMax(QLineSeries *series)
 {
     int max = series->at(0).y();
@@ -219,3 +252,4 @@ int MainWindow::map(int value, int in_min, int in_max, int out_min, int out_max)
 {
     return (value - in_min)*(out_max - out_min)/(in_max - in_min)+out_min;
 }
+

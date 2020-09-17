@@ -16,6 +16,8 @@
 #include <cmath>
 using namespace QtCharts;
 
+#define KILLOMETRS 12000
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
