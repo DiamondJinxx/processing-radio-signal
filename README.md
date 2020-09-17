@@ -1,5 +1,5 @@
 #Let's look same images:
-![begin](img/start)
-![begin](img/begin)
-![begin](img/median)
-![begin](img/result)
+![begin](img/start.png)
+![begin](img/begin.png)
+![begin](img/median.png)
+![begin](img/result.png)
