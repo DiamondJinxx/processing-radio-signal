@@ -18,6 +18,8 @@ MainWindow::MainWindow(QWidget *parent)
     sPerNorm = new QLineSeries();
     sParNorm12 = new QLineSeries();
     sPerNorm12 = new QLineSeries();
+    sMedianPar = new QLineSeries();
+    sMedianPer = new QLineSeries();
 
 }
 
@@ -163,7 +165,7 @@ void MainWindow::normValue()
     addChart(this->sParNorm, this->sPerNorm,"Нормирование по значениям");
 }
 
-// функция нормировки по колиметрам
+// функция нормировки по коллиметрам
 //
 void MainWindow::normKiloMetrs()
 {
@@ -183,6 +185,7 @@ void MainWindow::normKiloMetrs()
     addChart(this->sParNorm12, this->sPerNorm12, "Нормировка на 12 километров");
 }
 
+// добавление графика в новой вкладке
 void MainWindow::addChart(QLineSeries *sPar, QLineSeries *sPer,QString title)
 {
     QChartView *chartView = new QChartView(this);
@@ -221,6 +224,8 @@ void MainWindow::addChart(QLineSeries *sPar, QLineSeries *sPer,QString title)
     ui->tabGraphics->addTab(chartView, title);
 }
 
+
+// находит минимальное значение сигнала
 int MainWindow::findMin(QLineSeries *series)
 {
     int min = series->at(0).y();

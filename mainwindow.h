@@ -50,6 +50,9 @@ public:
     QLineSeries *sParNorm12; // серии для отображения графиков нормированных по расстоянию
     QLineSeries *sPerNorm12;
 
+    QLineSeries *sMedianPar;
+    QLineSeries *sMedianPer;
+
 private slots:
     void on_btnGo_clicked();
 
@@ -61,11 +64,15 @@ private:
     void dellZero(); // удаление
     void normValue(); // нормировка значений по промежутку от 0, до signal_max
     void normKiloMetrs(); // нормировка величин по 12 километрам
+    void median(); // функция медианного фильтра 3 порядка
 
     void addChart(QLineSeries *, QLineSeries*, QString title); // добавление вкладки с графиком
     int map(int value, int in_min,int in_max,int out_min,int out_max); // перевод значения в заданный интервад
     int findMin(QLineSeries *); // поиск минимального значения в серии
     int findMax(QLineSeries *); // поиск максимального значения в серии
+    int findMaxX(QLineSeries *);
     int findMinIndex(QLineSeries *); // return min vaue index
+
+
 };
 #endif // MAINWINDOW_H
